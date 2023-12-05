@@ -2,15 +2,14 @@ import re
 
 
 def problem1():
-    with open('data.txt', 'r') as file:
+    with open('sample.bin', 'r') as file:
         prev_line = []
         part_total = 0
         for line in file:
             print("----------------")
             number_pos = matchpattern(r'[0-9]', line.strip())
             symbols = matchpattern(r'[^.^[0-9]', line.strip())
-            full_number = 0
-            part_number = 0
+            line_arr = []
 
             if len(number_pos) > 0:
                 for num in number_pos:
@@ -18,42 +17,30 @@ def problem1():
                         prev0 = prev_line[num[0]]
                         prev1 = prev_line[num[0] - 1]
                         prev2 = prev_line[num[0] + 1]
-                        fn = findfullnumber(line, num[0])
-                        full_number = fn if full_number != fn else None
-                        if "." not in prev0 and full_number is not None:
-                            part_number += int(full_number)
-                            print(full_number)
-                        if "." not in prev1 and full_number is not None:
-                            part_number += int(full_number)
-                            print(full_number)
-                        if "." not in prev2 and full_number is not None:
-                            part_number += int(full_number)
-                            print(full_number)
+                        prev_arr = [prev0, prev1, prev2]
+                        for item in prev_arr:
+                            if "." not in item:
+                                full_number = int(findfullnumber(line, num[0]))
+                                if full_number not in line_arr:
+                                    line_arr.append(full_number)
+                                    print(line_arr)
 
-            if len(symbols) > 0:
-                for symbol in symbols:
-                    prev0 = prev_line[symbol[0]]
-                    prev1 = prev_line[symbol[0] - 1]
-                    prev2 = prev_line[symbol[0] + 1]
-                    sybl_full_number = 0
-                    if "." not in prev0 and sybl_full_number is not None:
-                        zero_fn = findfullnumber(prev_line, symbol[0])
-                        sybl_full_number = zero_fn if sybl_full_number != zero_fn else 0
-                        part_number += int(sybl_full_number)
-                        print(sybl_full_number)
-                    if "." not in prev1 and sybl_full_number is not None:
-                        one_fn = findfullnumber(prev_line, symbol[0] - 1)
-                        sybl_full_number = one_fn if sybl_full_number != one_fn else 0
-                        part_number += int(sybl_full_number)
-                        print(sybl_full_number)
-                    if "." not in prev2 and sybl_full_number is not None:
-                        two_fn = findfullnumber(prev_line, symbol[0] + 1)
-                        sybl_full_number = two_fn if sybl_full_number != two_fn else 0
-                        part_number += int(sybl_full_number)
-                        print(sybl_full_number)
+            for symbol in symbols:
+                prev0 = prev_line[symbol[0]]
+                prev1 = prev_line[symbol[0] - 1]
+                prev2 = prev_line[symbol[0] + 1]
+                prev_arr = [prev0, prev1, prev2]
+                for i, value in enumerate(prev_arr):
+                    if "." not in value:
+                        s = symbol[0]
+                        position = s if i < 1 else s - 1 if i < 2 else s + 1
+                        full_number = int(findfullnumber(prev_line, position))
+                        if full_number not in line_arr:
+                            line_arr.append(full_number)
+                            print(line_arr)
 
-            part_total += part_number
-            print("line part number", part_number)
+            part_total += sum(line_arr)
+            print("line part number", sum(line_arr), line_arr)
             prev_line = line
         print("Part total:", part_total)
 
