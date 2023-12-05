@@ -2,7 +2,7 @@ import re
 
 
 def problem1():
-    with open('sample.txt', 'r') as file:
+    with open('data.txt', 'r') as file:
         prev_line = []
         part_total = 0
         for line in file:
